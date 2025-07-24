@@ -9,7 +9,7 @@ function App() {
   return (
     <>
         <Header></Header>
-        <Box component="main">main</Box>
+        <Box component="main" sx={{minHeight: "450px"}}>main</Box>
         <Box component="footer">footer</Box>
     </>
   )
