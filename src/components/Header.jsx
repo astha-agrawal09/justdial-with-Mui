@@ -31,13 +31,13 @@ export default function Header() {
                         mr: 5
                     }
                 }} />
-                <Button variant="Text" sx={{ color: "blue", fontSize: "10px" }}>EN<KeyboardArrowDownIcon /></Button>
+                <Button variant="Text" sx={{ color: "blue", fontSize: "10px", }}>EN<KeyboardArrowDownIcon /></Button>
                 <Button variant="Text" sx={{ color: "black", fontSize: "8px" }}>We Are Hiring</Button>
                 <Button variant="Text" sx={{ color: "black", fontSize: "8px" }}>Investor Relations</Button>
                 <Button variant="Text" sx={{ color: "black", fontSize: "8px" }}><MessageIcon />Leads</Button>
                 <Button variant="Text" sx={{ color: "black", fontSize: "8px" }}><CampaignIcon />Advertise</Button>
                 <Button variant="Text" sx={{ color: "black", fontSize: "8px" }}><TrendingUpIcon />Free Listing</Button>
-                <Button variant="Text" sx={{ color: "white", fontSize: "8px", background: "blue", mr: 2 }}>Login/SignUp</Button>
+                <Button variant="Text" sx={{ color: "white", fontSize: "8px", background: "blue" }}>Login/SignUp</Button>
             </Box>
 
         </>
