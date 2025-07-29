@@ -14,7 +14,7 @@ export default function Header() {
     return (
         <>
             <Box className="a_tbdr" component="header" sx={{ height: "83px", display: "flex", alignItems: "center", }}>
-                <Box component="img" src="./public/justdial-logo-png_seeklogo-324435.png" alt="Logo" sx={{ height: '90px' }} />
+                <Box component="img" src="justdial-logo-png_seeklogo-324435.png" alt="Logo" sx={{ height: '90px' }} />
                 <TextField variant="outlined" placeholder="Select Location" size="small" InputProps={{
                     sx: {
                         height: 30,
