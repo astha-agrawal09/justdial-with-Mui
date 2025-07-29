@@ -63,7 +63,7 @@ export default function Main() {
 
     return (
         <Box component="main" sx={{ minHeight: "450px", display: "flex", flexWrap: "wrap", }}>
-            <Stack className="a_tbdr container" sx={{ px: 2, width: '100%', maxWidth: '100%', textAlign: "left", alignSelf: "flex-start", marginTop: 2 }}>
+            <Stack className="container" sx={{ px: 2, width: '100%', maxWidth: '100%', textAlign: "left", alignSelf: "flex-start", marginTop: 2 }}>
                 <Typography variant="h6" fontWeight="bold" >
                     Search across <b>4.9 Crore+</b>{" "}
                     <span style={{ color: "#007BFF" }}>Products & Services</span>
@@ -108,7 +108,7 @@ export default function Main() {
                         />
                         <Box
                             component="img"
-                            src="/public/realestate_square_hotkey.webp"
+                            src="realestate_square_hotkey.webp"
                             sx={{ width: 150, borderRadius: 2, background: "#6769D0" }}
                         />
                         <Box
