@@ -1,7 +1,21 @@
 import { Box, Stack, TextField, Typography, Grid, Card, CardMedia, CardContent, Avatar } from '@mui/material'
+import LeftCarousel from './LeftCarousal';
+import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
+import FlashOnIcon from '@mui/icons-material/FlashOn';
+import LiveTvIcon from '@mui/icons-material/LiveTv';
+import WaterDropIcon from '@mui/icons-material/WaterDrop';
+import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
+import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
+import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
+import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
+import TrainIcon from '@mui/icons-material/Train';
+import HotelIcon from '@mui/icons-material/Hotel';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+
 import React from 'react'
 
 export default function Main() {
+
     const categories = [
         { label: "Restaurants", icon: "🍽️" },
         { label: "Hotels", icon: "🏨" },
@@ -87,34 +101,28 @@ export default function Main() {
                 </Box>
 
                 <Stack direction="row" spacing={2} sx={{ marginTop: 5 }}>
-                    <Box
-                        component="img"
-                        src="https://akam.cdn.jdmagicbox.com/images/icontent/newwap/web2022/banner_webflight_2024.webp"
-                        alt="Banner"
-                        sx={{ width: '50%', borderRadius: '10px' }}
-                    />
-
+                    <LeftCarousel></LeftCarousel>
                     <Stack direction="row" spacing={2}>
                         <Box
                             component="img"
                             src="https://akam.cdn.jdmagicbox.com/images/icontent/newwap/web2022/b2b_square_hotkey.webp"
-                            sx={{ width: 150, borderRadius: 2, background: "#0E77CD" }}
+                            sx={{ width: 150, borderRadius: 2, background: "#0E77CD",":hover" : { boxShadow: 5 } }}
 
                         />
                         <Box
                             component="img"
                             src="https://akam.cdn.jdmagicbox.com/images/icontent/newwap/web2022/repair_square_hotkey.webp"
-                            sx={{ width: 150, borderRadius: 2, background: "#2654A1" }}
+                            sx={{ width: 150, borderRadius: 2, background: "#2654A1",":hover" : { boxShadow: 5 }  }}
                         />
                         <Box
                             component="img"
                             src="realestate_square_hotkey.webp"
-                            sx={{ width: 150, borderRadius: 2, background: "#6769D0" }}
+                            sx={{ width: 150, borderRadius: 2, background: "#6769D0",":hover" : { boxShadow: 5 }  }}
                         />
                         <Box
                             component="img"
                             src="https://akam.cdn.jdmagicbox.com/images/icontent/newwap/web2022/doctor_square_hotkey.webp"
-                            sx={{ width: 150, borderRadius: 2, background: "#008561" }}
+                            sx={{ width: 150, borderRadius: 2, background: "#008561",":hover" : { boxShadow: 5 }  }}
                         />
                     </Stack>
                 </Stack>
@@ -174,6 +182,105 @@ export default function Main() {
 
 
 
+            <Box sx={{ px: 4, py: 4, bgcolor: "#f9f9f9",width: "100%" }}>
+      {/* Bills & Recharge */}
+      <Box sx={{ bgcolor: "#fff", borderRadius: 2, p: 3, mb: 4, boxShadow: 1 }}>
+        <Typography variant="h6" fontWeight="bold">
+          Bills & Recharge{" "}
+          <img
+            src="https://bharatconnect.justdial.com/images/brandLogo.svg"
+            alt="bharat"
+            width={20}
+            style={{ marginLeft: 5, verticalAlign: "middle" }}
+          />
+        </Typography>
+        <Typography sx={{ mt: 1 }}>
+          Pay your bills & recharge instantly with Justdial
+        </Typography>
+        <Typography sx={{ color: "#0b5ed7", fontWeight: 500, mt: 1 }}>
+          Explore More
+        </Typography>
+        <Grid container spacing={2} sx={{ mt: 2 }}>
+          {[
+            { icon: <PhoneIphoneIcon />, label: "Mobile" },
+            { icon: <FlashOnIcon />, label: "Electricity" },
+            { icon: <LiveTvIcon />, label: "DTH" },
+            { icon: <WaterDropIcon />, label: "Water" },
+            { icon: <LocalGasStationIcon />, label: "Gas" },
+            { icon: <HealthAndSafetyIcon />, label: "Insurance" },
+          ].map((item, index) => (
+            <Grid item xs={4} sm={2} key={index}>
+              <Card
+                sx={{
+                  textAlign: "center",
+                  py: 2,
+                  borderRadius: 2,
+                  border: "1px solid #e0e0e0",
+                  boxShadow: "none",
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ fontSize: 40, color: "#1976d2" }}>{item.icon}</Box>
+                  <Typography>{item.label}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+
+      {/* Travel Bookings */}
+      <Box sx={{ bgcolor: "#fff", borderRadius: 2, p: 3, boxShadow: 1 }}>
+        <Typography variant="h6" fontWeight="bold">
+          Travel Bookings
+        </Typography>
+        <Typography sx={{ mt: 1 }}>
+          Instant ticket bookings for your best travel experience
+        </Typography>
+        <Typography sx={{ color: "#0b5ed7", fontWeight: 500, mt: 1 }}>
+          Explore More
+        </Typography>
+        <Grid container spacing={2} sx={{ mt: 2 }}>
+          {[
+            {
+              icon: <FlightTakeoffIcon />,
+              label: "Flight",
+              sub: "Powered By Easemytrip.com",
+            },
+            { icon: <DirectionsBusIcon />, label: "Bus", sub: "Affordable Rides" },
+            { icon: <TrainIcon />, label: "Train" },
+            { icon: <HotelIcon />, label: "Hotel", sub: "Budget-friendly Stay" },
+            {
+              icon: <DirectionsCarIcon />,
+              label: "Car Rentals",
+              sub: "Drive Easy Anywhere",
+            },
+          ].map((item, index) => (
+            <Grid item xs={4} sm={2.4} key={index}>
+              <Card
+                sx={{
+                  textAlign: "center",
+                  py: 2,
+                  borderRadius: 2,
+                  border: "1px solid #e0e0e0",
+                  boxShadow: "none",
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ fontSize: 40, color: "#1976d2" }}>{item.icon}</Box>
+                  <Typography>{item.label}</Typography>
+                  {item.sub && (
+                    <Typography variant="caption" color="green">
+                      {item.sub}
+                    </Typography>
+                  )}
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    </Box>
         </Box>
     )
 }

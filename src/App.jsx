@@ -3,6 +3,7 @@ import './App.css'
 import { Box } from '@mui/material'
 import Header from './components/Header'
 import Main from './components/Main'
+import Footer1 from './components/Footer1'
 
 function App() {
 
@@ -11,7 +12,7 @@ function App() {
     <>
         <Header></Header>
         <Main></Main>
-        <Box component="footer">footer</Box>
+        <Footer1></Footer1>
     </>
   )
 }
