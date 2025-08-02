@@ -1,164 +1,516 @@
-import { Box, Stack, TextField, Typography, Grid, Card, CardMedia, CardContent, Avatar } from '@mui/material'
-import LeftCarousel from './LeftCarousal';
-import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
-import FlashOnIcon from '@mui/icons-material/FlashOn';
-import LiveTvIcon from '@mui/icons-material/LiveTv';
-import WaterDropIcon from '@mui/icons-material/WaterDrop';
-import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
-import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
-import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
-import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
-import TrainIcon from '@mui/icons-material/Train';
-import HotelIcon from '@mui/icons-material/Hotel';
-import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import React, { useState, useEffect } from "react";
+import {
+  Box, Typography, TextField, Button, InputAdornment, Card, Grid, useTheme, useMediaQuery,
+  CardMedia,
+  CardContent,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import MicIcon from "@mui/icons-material/Mic";
+import LocationOnSharpIcon from "@mui/icons-material/LocationOnSharp";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { BlockOutlined, BoltOutlined } from "@mui/icons-material";
 
-import React from 'react'
+const carouselItems = [
+  {
+    img: "public/banner_bills.webp",
+    background: "#eaf7ff",
+  },
+  {
+    img: "public/banner_easemytrip.webp",
+    background: "#fff7e6",
+  },
+  {
+    img: "public/banner_hotels.webp",
+    background: "#e8fff1",
+  },
+  {
+    img: "public/banner_loans.webp",
+    background: "#eaf7ff",
+  }
+];
 
-export default function Main() {
+const serviceCards = [
+  {
+    title: "B2B",
+    subtitle: "Quick Quotes",
+    background: "#0E77CD",
+    img: "/b2b_square_hotkey.webp",
+  },
+  {
+    title: "REPAIRS & SERVICES",
+    subtitle: "Get Nearest Vendor",
+    background: "#0B5394",
+    img: "/repair_square_hotkey.webp",
+  },
+  {
+    title: "REAL ESTATE",
+    subtitle: "Finest Agents",
+    background: "#6A1B9A",
+    img: "/realestate_square_hotkey.webp",
+  },
+  {
+    title: "DOCTORS",
+    subtitle: "Book Now",
+    background: "#00796B",
+    img: "/doctor_square_hotkey.webp",
+  },
+];
 
-    const categories = [
-        { label: "Restaurants", icon: "🍽️" },
-        { label: "Hotels", icon: "🏨" },
-        { label: "Beauty Spa", icon: "💆" },
-        { label: "Home Decor", icon: "🛋️" },
-        { label: "Wedding", icon: "💍" },
-        { label: "Education", icon: "🎓" },
-        { label: "Rent & Hire", icon: "🚗" },
-        { label: "Hospitals", icon: "🏥" },
-        { label: "Contractors", icon: "🛠️" },
-        { label: "Pet Shops", icon: "🐶" },
-        { label: "PG/Hostels", icon: "🛏️" },
-        { label: "Estate Agent", icon: "🏢" },
-        { label: "Dentists", icon: "🦷" },
-        { label: "Gym", icon: "🏋️" },
-        { label: "Loans", icon: "💰" },
-        { label: "Event Organisers", icon: "🎉" },
-        { label: "Driving Schools", icon: "🚘" },
-        { label: "Packers & Movers", icon: "📦" },
-        { label: "Courier", icon: "🚚" },
-        { label: "Popular", icon: "📊" },
-    ];
+function darkenColor(hex, amount = 0.2) {
+  let col = hex.replace("#", "");
+  if (col.length === 3) col = col.split("").map(c => c + c).join("");
 
-    const sectionCards = [
+  const num = parseInt(col, 16);
+  let r = (num >> 16) - (255 * amount);
+  let g = ((num >> 8) & 0x00FF) - (255 * amount);
+  let b = (num & 0x0000FF) - (255 * amount);
+
+  r = Math.max(0, Math.min(255, Math.round(r)));
+  g = Math.max(0, Math.min(255, Math.round(g)));
+  b = Math.max(0, Math.min(255, Math.round(b)));
+
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+const categories = [
+  { label: "Restaurants", icon: "/restaurant-2022.svg" },
+  { label: "Hotels", icon: "/hotel-2022.svg" },
+  { label: "Beauty Spa", icon: "/beauty.svg" },
+  { label: "Home Decor", icon: "/homedecor.svg" },
+  { label: "Wedding Planning", icon: "/hotkey_wedding_icon.webp" },
+  { label: "Education", icon: "/education.svg" },
+  { label: "Rent & Hire", icon: "/renthire.svg" },
+  { label: "Hospitals", icon: "/hospital_2023.svg" },
+  { label: "Contractors", icon: "/contractor-2022.svg" },
+  { label: "Pet Shops", icon: "/pet_shops_2023.svg" },
+  { label: "PG/Hostels", icon: "/pg-hostels-rooms.svg" },
+  { label: "Estate Agent", icon: "/estate-agent.svg" },
+  { label: "Dentists", icon: "/dentist_2023.svg" },
+  { label: "Gym", icon: "/gym_2023.svg" },
+  { label: "Loans", icon: "/loans.svg" },
+  { label: "Event Organisers", icon: "/eventorganizers.svg" },
+  { label: "Driving Schools", icon: "/driving_school_2023.svg" },
+  { label: "Packers & Movers", icon: "/packers_movers_2023.svg" },
+  { label: "Courier Service", icon: "/courier_2023.svg" },
+  { label: "Popular Categories", icon: "/popularcategory.jpeg" },
+];
+
+export default function CategorySearchSection() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    arrows: false,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
+
+  const sectionCards = [
         {
             title: "Wedding Requisites",
             items: [
-                { title: "Banquet Halls", image: "/banquethalls.webp" },
-                { title: "Bridal Requisite", image: "/bridalrequisite.webp" },
-                { title: "Caterers", image: "caterers.webp" },
+                { title: "Banquet Halls", image: "/public/banquethalls.webp" },
+                { title: "Bridal Requisite", image: "/public/bridalrequisite.webp" },
+                { title: "Caterers", image: "/public/caterers.webp" },
             ],
         },
         {
             title: "Beauty & Spa",
             items: [
-                { title: "Beauty Parlours", image: "beautyparlours.webp" },
-                { title: "Spa & Massages", image: "spamassages.webp" },
-                { title: "Salons", image: "salons.webp" },
+                { title: "Beauty Parlours", image: "/public/beautyparlours.webp" },
+                { title: "Spa & Massages", image: "/public/spamassages.webp" },
+                { title: "Salons", image: "/public/salons.webp" },
             ],
         },
         {
             title: "Repairs & Services",
             items: [
-                { title: "AC Service", image: "acrepair.webp" },
-                { title: "Car Service", image: "carservice.webp" },
-                { title: "Bike Service", image: "bikeservice.webp" },
+                { title: "AC Service", image: "/public/acrepair.webp" },
+                { title: "Car Service", image: "/public/carservice.webp" },
+                { title: "Bike Service", image: "/public/bikeservice.webp" },
             ],
         },
         {
             title: "Daily Needs",
             items: [
-                { title: "Movies", image: "movies.webp" },
-                { title: "Grocery", image: "grocery.webp" },
-                { title: "Electricians", image: "electricians.webp" },
+                { title: "Movies", image: "/public/movies.webp" },
+                { title: "Grocery", image: "/public/grocery.webp" },
+                { title: "Electricians", image: "/public/electricians.webp" },
             ],
         },
     ];
 
+  const rotatingTexts = [
+    <>‘4.7 Crore+’ <span style={{ color: "#0070c0" }}>Businesses</span></>,
+    <>‘5.9 Crore+’ <span style={{ color: "#0070c0" }}>Products & Services</span></>,
+  ];
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-    return (
-        <Box component="main" sx={{ minHeight: "450px", display: "flex", flexWrap: "wrap", }}>
-            <Stack className="container" sx={{ px: 2, width: '100%', maxWidth: '100%', textAlign: "left", alignSelf: "flex-start", marginTop: 2 }}>
-                <Typography variant="h6" fontWeight="bold" >
-                    Search across <b>4.9 Crore+</b>{" "}
-                    <span style={{ color: "#007BFF" }}>Products & Services</span>
-                </Typography>
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % rotatingTexts.length);
+    }, 3000);
 
-                <Box sx={{ display: "flex", gap: 2, }}>
-                    <TextField placeholder="Select Location" InputProps={{
-                        sx: {
-                            height: 30,
-                            fontSize: '14px',
+    return () => clearInterval(interval);
+  }, []);
 
-                        }
-                    }} />
-                    <TextField placeholder="Search in Mumbai" InputProps={{
-                        sx: {
-                            height: 30,
-                            fontSize: '14px',
-                            mr: 5
-                        }
-                    }} />
+  return (
+    <Box sx={{ backgroundColor: "#fff", px: 2, py: 3 }}>
+      {/* 1. Main Heading */}
+      <Box
+        sx={{
+          height: isMobile ? 32 : 38,
+          overflow: "hidden",
+          mb: 1,
+        }}
+      >
+        <Typography
+          variant={isMobile ? "h6" : "h5"}
+          sx={{
+            fontWeight: "bold",
+            color: "#333",
+            textAlign: "start",
+            lineHeight: 1.2,
+            position: "relative",
+          }}
+        >
+          Search across&nbsp;
+          <Box
+            sx={{
+              display: "inline-block",
+              height: isMobile ? 32 : 38,
+              overflow: "hidden",
+              verticalAlign: "bottom",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                transition: "transform 0.6s ease",
+                transform: `translateY(-${currentIndex * (isMobile ? 32 : 38)}px)`,
+              }}
+            >
+              {rotatingTexts.map((text, idx) => (
+                <Box key={idx} sx={{ height: isMobile ? 32 : 38 }}>
+                  {text}
                 </Box>
+              ))}
+            </Box>
+          </Box>
+        </Typography>
+      </Box>
 
-                <Stack direction="row" spacing={2} sx={{ marginTop: 5 }}>
-                    <LeftCarousel></LeftCarousel>
-                    <Stack direction="row" spacing={2}>
-                        <Box
-                            component="img"
-                            src="https://akam.cdn.jdmagicbox.com/images/icontent/newwap/web2022/b2b_square_hotkey.webp"
-                            sx={{ width: 150, borderRadius: 2, background: "#0E77CD",":hover" : { boxShadow: 5 } }}
+      {/* 2. Search Fields */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "start",
+          flexWrap: "wrap",
+          gap: 2,
+        }}
+      >
+        <TextField
+          placeholder="Mumbai"
+          size="small"
+          variant="outlined"
+          sx={{ minWidth: 150 }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <LocationOnSharpIcon sx={{ color: "#757575" }} />
+              </InputAdornment>
+            ),
+          }}
+        />
 
-                        />
-                        <Box
-                            component="img"
-                            src="https://akam.cdn.jdmagicbox.com/images/icontent/newwap/web2022/repair_square_hotkey.webp"
-                            sx={{ width: 150, borderRadius: 2, background: "#2654A1",":hover" : { boxShadow: 5 }  }}
-                        />
-                        <Box
-                            component="img"
-                            src="realestate_square_hotkey.webp"
-                            sx={{ width: 150, borderRadius: 2, background: "#6769D0",":hover" : { boxShadow: 5 }  }}
-                        />
-                        <Box
-                            component="img"
-                            src="https://akam.cdn.jdmagicbox.com/images/icontent/newwap/web2022/doctor_square_hotkey.webp"
-                            sx={{ width: 150, borderRadius: 2, background: "#008561",":hover" : { boxShadow: 5 }  }}
-                        />
-                    </Stack>
-                </Stack>
+        <TextField
+          placeholder="Search for Spa, Salons..."
+          size="small"
+          sx={{ minWidth: 450 }}
+          variant="outlined"
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <MicIcon sx={{ color: "#0070c0", cursor: "pointer" }} />
+                <Button
+                  variant="contained"
+                  color="warning"
+                  size="small"
+                  sx={{ px: 1, minWidth: 20 }}
+                >
+                  <SearchIcon />
+                </Button>
+              </InputAdornment>
+            ),
+          }}
+        />
+      </Box>
 
-            </Stack>
-            <Grid container spacing={2} sx={{ mt: 3 }}>
-                {categories.map((item, index) => (
-                    <Grid key={index}>
-                        <Card
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                p: 2,
-                                borderRadius: 3,
-                                boxShadow: 2,
-                                cursor: "pointer",
-                                ":hover": { boxShadow: 5 },
-                            }}
-                        >
-                            <Avatar sx={{ bgcolor: "#f0f0f0", color: "#000", mb: 1 }}>{item.icon}</Avatar>
-                            <Typography variant="body2" align="center" sx={{ fontSize: "0.9rem" }}>
-                                {item.label}
-                            </Typography>
-                        </Card>
-                    </Grid>
-                ))}
+      {/* 3. Carousel + Right Cards */}
+      <Box
+        sx={{
+          mt: 4,
+          display: "flex",
+          flexDirection: isMobile ? "column" : "row",
+          gap: 2,
+        }}
+      >
+        {/* Left Carousel */}
+        <Box
+          sx={{
+            width: isMobile ? "100%" : "550px",
+            height: "240px",
+            borderRadius: 2,
+            overflow: "hidden",
+          }}
+        >
+          <Slider {...sliderSettings}>
+            {carouselItems.map((item, index) => (
+              <Box
+                key={index}
+                sx={{
+                  width: "100%",
+                  height: "240px",
+                }}
+              >
+                <Box
+                  component="img"
+                  src={item.img}
+                  alt={`carousel-${index}`}
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    borderRadius: 2,
+                  }}
+                />
+              </Box>
+            ))}
+          </Slider>
+        </Box>
+
+        {/* Right Side Scrollable Service Cards */}
+        <Box
+          sx={{
+            flex: 1,
+            display: "flex",
+            overflowX: "auto",
+            gap: 2,
+            pb: 1,
+          }}
+        >
+          {serviceCards.map((card, index) => (
+            <Card
+              key={index}
+              sx={{
+                minWidth: 170,
+                height: 240,
+                borderRadius: 2,
+                position: "relative",
+                flexShrink: 0,
+                overflow: "hidden",
+                backgroundColor: card.background,
+                p: 0,
+                cursor: "pointer",
+                '&:hover .zoom-img': {
+                  transform: 'scale(1.1)',
+                },
+                '&:hover .zoom-text': {
+                  transform: 'scale(1.05)',
+                }
+              }}
+            >
+              <Box
+                component="img"
+                src={card.img}
+                alt={card.title}
+                className="zoom-img"
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  transition: "transform 0.4s ease",
+                  zIndex: 2,
+                  position: 'relative'
+                }}
+              />
+              <Box
+                className="zoom-text"
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  px: 2,
+                  py: 1.5,
+                  color: "#fff",
+                  zIndex: 1,
+                  transition: "transform 0.4s ease",
+                }}
+              >
+                <Typography variant="subtitle1" fontWeight="bold">
+                  {card.title}
+                </Typography>
+                <Typography variant="body2">{card.subtitle}</Typography>
+              </Box>
+              <Box
+                sx={{
+                  position: "absolute",
+                  bottom: 12,
+                  left: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  zIndex: 3,
+                  cursor: "pointer",
+                  '& .explore-wrapper': {
+                    display: 'flex',
+                    alignItems: 'center',
+                    backgroundColor: darkenColor(card.background, 0.2),
+                    borderTopRightRadius: '4px',
+                    borderBottomRightRadius: '4px',
+                    transition: 'all 0.3s ease',
+                    px: 1.2,
+                    py: 0.2,
+                  },
+                  '& .explore-text': {
+                    fontSize: 13,
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    transition: 'all 0.3s ease',
+                    opacity: 0,
+                    transform: 'translateX(-10px)',
+                    width: 0,
+                    color: "#fff",
+                  },
+                  '& .arrow-icon': {
+                    fontSize: 18,
+                    transition: 'transform 0.3s ease',
+                    color: "#fff",
+                  },
+                  '&:hover .explore-wrapper': {
+                    backgroundColor: "#fff",
+                  },
+                  '&:hover .explore-text': {
+                    opacity: 1,
+                    transform: 'translateX(0)',
+                    width: 'auto',
+                    marginRight: '6px',
+                    color: card.background,
+                  },
+                  '&:hover .arrow-icon': {
+                    transform: 'translateX(4px)',
+                    color: card.background,
+                  },
+                }}
+              >
+                <Box className="explore-wrapper">
+                  <Typography className="explore-text">Explore</Typography>
+                  <Typography className="arrow-icon">&gt;</Typography>
+                </Box>
+              </Box>
+            </Card>
+          ))}
+        </Box>
+      </Box>
+
+      {/* 4. Category Cards (Blue Circular Layout) */}
+      <Box sx={{ mt:4, px: 1 }}>
+        <Grid container spacing={5} justifyContent="start" alignItems="center">
+          {categories.slice(0, 10).map((category, index) => (
+            <Grid item key={index} xs={1.2}>
+              <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <Card
+                  sx={{
+                    width: 80,
+                    height: 80,
+                    borderRadius: "20%", // 20% corner radius
+                    backgroundColor: "#e0f7ff",
+                    boxShadow: 1,
+                    transition: "transform 0.3s ease",
+                    "&:hover": {
+                      transform: "scale(1.1)",
+                    },
+                    overflow: "hidden",
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={category.icon}
+                    alt={category.label}
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </Card>
+                <Typography
+                  variant="caption"
+                  sx={{ mt: 0.5, textAlign: "start", color: "#333" }}
+                >
+                  {category.label}
+                </Typography>
+              </Box>
             </Grid>
-
-            {sectionCards.map((section, idx) => (
+          ))}
+        </Grid>
+        <Grid container spacing={5} justifyContent="start" alignItems="center" mt={5}>
+         {categories.slice(10, 20).map((category, index) => (
+            <Grid item key={index} xs={1.2}>
+              <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <Card
+                  sx={{
+                    width: 80,
+                    height: 80,
+                    borderRadius: "20%", // 20% corner radius
+                    backgroundColor: "#e0f7ff",
+                    boxShadow: 1,
+                    transition: "transform 0.3s ease",
+                    "&:hover": {
+                      transform: "scale(1.1)",
+                    },
+                    overflow: "hidden",
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={category.icon}
+                    alt={category.label}
+                    sx={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </Card>
+                <Typography
+                  variant="caption"
+                  sx={{ mt: 1, textAlign: "center", color: "#333"}}
+                >
+                  {category.label}
+                </Typography>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+      
+      <Grid container spacing={2} sx={{ width: '100%', margin: 0 }}>
+      {sectionCards.map((section, idx) => (
                 <Box key={idx} sx={{ mb: 4, border: "1px solid #ddd", borderRadius: 2, p: 2, mt: 3 }}>
                     <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
                         {section.title}
                     </Typography>
 
-                    <Grid container spacing={2}>
+                    <Grid container spacing={2} xs={12} sm={6} md={4}>
                         {section.items.map((item, index) => (
                             <Grid key={index}>
                                 <Card sx={{ borderRadius: 2, boxShadow: 1, cursor: 'pointer',  ":hover": { boxShadow: 5 } }}>
@@ -178,109 +530,9 @@ export default function Main() {
                         ))}
                     </Grid>
                 </Box>
+                
             ))}
-
-
-
-            <Box sx={{ px: 4, py: 4, bgcolor: "#f9f9f9",width: "100%" }}>
-      {/* Bills & Recharge */}
-      <Box sx={{ bgcolor: "#fff", borderRadius: 2, p: 3, mb: 4, boxShadow: 1 }}>
-        <Typography variant="h6" fontWeight="bold">
-          Bills & Recharge{" "}
-          <img
-            src="https://bharatconnect.justdial.com/images/brandLogo.svg"
-            alt="bharat"
-            width={20}
-            style={{ marginLeft: 5, verticalAlign: "middle" }}
-          />
-        </Typography>
-        <Typography sx={{ mt: 1 }}>
-          Pay your bills & recharge instantly with Justdial
-        </Typography>
-        <Typography sx={{ color: "#0b5ed7", fontWeight: 500, mt: 1 }}>
-          Explore More
-        </Typography>
-        <Grid container spacing={2} sx={{ mt: 2 }}>
-          {[
-            { icon: <PhoneIphoneIcon />, label: "Mobile" },
-            { icon: <FlashOnIcon />, label: "Electricity" },
-            { icon: <LiveTvIcon />, label: "DTH" },
-            { icon: <WaterDropIcon />, label: "Water" },
-            { icon: <LocalGasStationIcon />, label: "Gas" },
-            { icon: <HealthAndSafetyIcon />, label: "Insurance" },
-          ].map((item, index) => (
-            <Grid item xs={4} sm={2} key={index}>
-              <Card
-                sx={{
-                  textAlign: "center",
-                  py: 2,
-                  borderRadius: 2,
-                  border: "1px solid #e0e0e0",
-                  boxShadow: "none",
-                }}
-              >
-                <CardContent>
-                  <Box sx={{ fontSize: 40, color: "#1976d2" }}>{item.icon}</Box>
-                  <Typography>{item.label}</Typography>
-                </CardContent>
-              </Card>
             </Grid>
-          ))}
-        </Grid>
-      </Box>
-
-      {/* Travel Bookings */}
-      <Box sx={{ bgcolor: "#fff", borderRadius: 2, p: 3, boxShadow: 1 }}>
-        <Typography variant="h6" fontWeight="bold">
-          Travel Bookings
-        </Typography>
-        <Typography sx={{ mt: 1 }}>
-          Instant ticket bookings for your best travel experience
-        </Typography>
-        <Typography sx={{ color: "#0b5ed7", fontWeight: 500, mt: 1 }}>
-          Explore More
-        </Typography>
-        <Grid container spacing={2} sx={{ mt: 2 }}>
-          {[
-            {
-              icon: <FlightTakeoffIcon />,
-              label: "Flight",
-              sub: "Powered By Easemytrip.com",
-            },
-            { icon: <DirectionsBusIcon />, label: "Bus", sub: "Affordable Rides" },
-            { icon: <TrainIcon />, label: "Train" },
-            { icon: <HotelIcon />, label: "Hotel", sub: "Budget-friendly Stay" },
-            {
-              icon: <DirectionsCarIcon />,
-              label: "Car Rentals",
-              sub: "Drive Easy Anywhere",
-            },
-          ].map((item, index) => (
-            <Grid item xs={4} sm={2.4} key={index}>
-              <Card
-                sx={{
-                  textAlign: "center",
-                  py: 2,
-                  borderRadius: 2,
-                  border: "1px solid #e0e0e0",
-                  boxShadow: "none",
-                }}
-              >
-                <CardContent>
-                  <Box sx={{ fontSize: 40, color: "#1976d2" }}>{item.icon}</Box>
-                  <Typography>{item.label}</Typography>
-                  {item.sub && (
-                    <Typography variant="caption" color="green">
-                      {item.sub}
-                    </Typography>
-                  )}
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
-    </Box>
-        </Box>
-    )
+</Box>
+  );
 }
